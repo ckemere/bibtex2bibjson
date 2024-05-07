@@ -46,6 +46,9 @@ def collection_from_dict(entries, **kwargs):
 
     # set records
     for key, entry in entries.items():
+        if not 'year' in entry.keys():
+            print(entry)
+            continue
         c['records'].append(record_from_entry(key, entry, kwargs['collection']))
 
     c['metadata']['records'] = len(c['records'])
@@ -67,6 +70,16 @@ def record_from_entry(key, entry, collection):
     r['id'] = key
     r['citekey'] = key
     r['collection'] = collection
+
+    if 'file' in entry.keys():
+        filename = entry['file']
+        r['file'] = filename.split(':')[0]
+
+    if 'url' in entry.keys():
+        r['url'] = entry['url']
+
+    if 'doi' in entry.keys():
+        r['doi'] = entry['doi']     
 
     # call fill_record_<type> to convert entry of specific type to BibJSON dict
     fill_func = 'fill_record_%s' % r['type']
